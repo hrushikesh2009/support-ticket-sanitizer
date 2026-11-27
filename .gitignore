@@ -4,5 +4,5 @@ dist/
 .env.*
 !.env.example
 *.local
-verify.bundle.mjs
 out.txt
+.vercel/

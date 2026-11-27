@@ -1,7 +1,7 @@
 # PromptWars Cybersecurity & Data Privacy Challenge
 ## Project: Support Ticket Sanitizer (Dashboard Redesign)
 
-### 1. Active Local Development URL
+### 1. Initial Local Development URL
 > **Local Application URL:** [http://127.0.0.1:5173/](http://127.0.0.1:5173/)  
 > Running continuously from `frontend/` on external loopback `127.0.0.1:5173` outside sandbox, ready for browser evaluation.
 
@@ -106,3 +106,22 @@ npm run build
 - Modules transformed: 1,595
 - Output directory: `frontend/dist/`
 - Build status: **0 errors, 0 warnings**
+
+---
+
+### 7. Follow-up prompts and verification (27 November 2026)
+
+Google Antigravity built the initial app from the PromptWars build brief and verification prompt. Codex helped draft those prompts and later edited the frontend directly.
+
+| Tool | Prompt or task | Result |
+| --- | --- | --- |
+| Google Antigravity | Build and verify a browser-only Support Ticket Sanitizer with three redaction modes and TXT/CSV export. | Created the initial frontend and sample workflow. |
+| Codex | “now i want u to edit this frontend and create the website” | Redesigned the frontend and later added the routed Scanner, CSV tools, and Dashboard. |
+| Codex | “pls improve accesibility and security and practical use dont change any ui pls do it in 3 min” | Added screen-reader announcements, input limits, and Vercel security headers. |
+| Codex | “mainly improve testing” | Replaced the earlier verification script with Vitest tests for the detection engine, CSV exports, and keyboard interactions. The tests caught and guided fixes for compact-phone masking and compressed IPv6 detection. |
+
+Latest application commit: `c10df20`.
+
+- `npm test -- --coverage` passed all 35 tests across 3 suites.
+- Engine coverage was 94.87% for lines and 84% for branches.
+- `npm run build` passed. The earlier 28-assertion report above records an earlier version.
