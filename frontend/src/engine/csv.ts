@@ -88,7 +88,7 @@ export function parseCsv(csvText: string): string[][] {
  * RFC 4180 CSV Serializer
  * Quotes fields that contain commas, quotes, or newlines, escaping quotes properly.
  */
-export function serializeCsv(rows: string[][]): string {
+export function serializeCsv(rows: string[][], quoteAll = false): string {
   return rows
     .map((row) =>
       row
@@ -96,6 +96,7 @@ export function serializeCsv(rows: string[][]): string {
           if (cell === null || cell === undefined) return '';
           const str = String(cell);
           const needsQuoting =
+            quoteAll ||
             (str === '' && row.length === 1) ||
             str.includes(',') ||
             str.includes('"') ||
@@ -109,6 +110,16 @@ export function serializeCsv(rows: string[][]): string {
         .join(',')
     )
     .join('\n');
+}
+
+/** Prefix formula-like values with a visible text marker and quote every field. */
+export function createSpreadsheetCsv(sanitizedCsv: string): string {
+  const rows = parseCsv(sanitizedCsv).map((row) => row.map((value) => {
+    const normalized = value.normalize('NFKC');
+    const looksLikeFormula = /^[=+\-@]/.test(normalized.trimStart()) || /^[\r\n\t]/.test(normalized);
+    return looksLikeFormula ? `[TEXT] ${value}` : value;
+  }));
+  return serializeCsv(rows, true);
 }
 
 /**

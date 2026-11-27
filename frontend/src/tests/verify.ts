@@ -4,7 +4,7 @@
 import { isValidLuhn } from '../engine/luhn';
 import { detectAllCandidates, resolveOverlaps } from '../engine/detector';
 import { sanitizeDocument } from '../engine/masker';
-import { parseCsv, serializeCsv, sanitizeCsvDocument } from '../engine/csv';
+import { createSpreadsheetCsv, parseCsv, serializeCsv, sanitizeCsvDocument } from '../engine/csv';
 import { SAMPLE_SUPPORT_TICKET } from '../engine/sampleTicket';
 
 function assert(condition: boolean, msg: string) {
@@ -92,5 +92,13 @@ const csvSanitizedPseudo = sanitizeCsvDocument(csvRaw, 'PSEUDONYMIZE');
 const reParsedPseudo = parseCsv(csvSanitizedPseudo.sanitizedText);
 assert(reParsedPseudo[1][3] === 'EMAIL_01', 'Row 1 email pseudonymized as EMAIL_01');
 assert(reParsedPseudo[2][3] === 'EMAIL_01', 'Row 2 identical email also pseudonymized as EMAIL_01 across rows');
+
+const spreadsheetSource = [['=Header', 'Notes'], [' \t＠Tag', 'Keep, these "quotes"'], ['Normal', 'First\nsecond']];
+const spreadsheetCsv = createSpreadsheetCsv(serializeCsv(spreadsheetSource));
+const spreadsheetRows = parseCsv(spreadsheetCsv);
+assert(spreadsheetRows[0][0] === '[TEXT] =Header', 'Spreadsheet export prefixes formula-like headers');
+assert(spreadsheetRows[1][0] === '[TEXT]  \t＠Tag', 'Spreadsheet export checks whitespace and full-width operators');
+assert(spreadsheetRows[1][1] === spreadsheetSource[1][1] && spreadsheetRows[2][1] === spreadsheetSource[2][1], 'Spreadsheet export preserves ordinary values and multiline cells');
+assert(spreadsheetCsv.startsWith('"[TEXT] =Header","Notes"'), 'Spreadsheet export quotes every field');
 
 console.log('--- ALL TESTS PASSED SUCCESSFULLY! ---');

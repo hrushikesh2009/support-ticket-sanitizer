@@ -4,7 +4,7 @@ import { CsvTablePreview } from '../components/CsvTablePreview';
 import { ModeSelector } from '../components/ModeSelector';
 import { PageLayout, Reveal } from '../components/PageLayout';
 import { sanitizeCsvDocument } from '../engine/csv';
-import { downloadText } from '../engine/download';
+import { downloadSpreadsheetCsv, downloadText } from '../engine/download';
 import { SAMPLE_CSV_TICKET } from '../engine/sampleTicket';
 import { usePreferences } from '../state/PreferencesContext';
 import { useSession } from '../state/SessionContext';
@@ -100,9 +100,15 @@ export function CsvPage() {
               </div>
               <div className="csv-actions">
                 <button type="button" className="route-action motion-control" disabled={!!result} onClick={sanitize}>Sanitize CSV</button>
-                {result && source && <button type="button" className="secondary-action motion-control"
-                  onClick={() => downloadText(result.sanitizedText, source.name.replace(/\.csv$/i, '-sanitized.csv'), 'csv')}
-                ><Download size={16} aria-hidden="true" /> Download sanitized CSV</button>}
+                {result && source && <>
+                  <button type="button" className="secondary-action motion-control"
+                    onClick={() => downloadText(result.sanitizedText, source.name.replace(/\.csv$/i, '-sanitized.csv'), 'csv')}
+                  ><Download size={16} aria-hidden="true" /> Download sanitized CSV</button>
+                  <button type="button" className="secondary-action motion-control"
+                    title="Prefixes formula-like cells with [TEXT]"
+                    onClick={() => downloadSpreadsheetCsv(result.sanitizedText, source.name.replace(/\.csv$/i, '-sanitized.csv'))}
+                  >Download spreadsheet CSV</button>
+                </>}
               </div>
             </div>
             <ModeSelector mode={mode} onChange={(nextMode) => {
@@ -115,6 +121,7 @@ export function CsvPage() {
               <button type="button" className="secondary-action motion-control" aria-pressed={!!showResult} disabled={!result}
                 onClick={() => setView('after')}>After</button>
             </div>
+            {result && <p className="card-description">The spreadsheet download prefixes formula-like cells with [TEXT].</p>}
             <CsvTablePreview title={showResult ? 'Sanitized CSV' : 'Original CSV'}
               headers={showResult ? showResult.sanitizedHeaders : table.headers}
               rows={showResult ? showResult.sanitizedRows : table.originalRows}

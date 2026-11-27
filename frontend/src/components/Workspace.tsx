@@ -7,7 +7,7 @@ import { EMPTY_COUNTS, useSession } from '../state/SessionContext';
 import { usePreferences } from '../state/PreferencesContext';
 import { sanitizeDocument } from '../engine/masker';
 import { sanitizeCsvDocument, isCsvFormat } from '../engine/csv';
-import { downloadText } from '../engine/download';
+import { downloadSpreadsheetCsv, downloadText } from '../engine/download';
 import { SAMPLE_SUPPORT_TICKET, SAMPLE_CSV_TICKET } from '../engine/sampleTicket';
 import { ModeSelector } from './ModeSelector';
 import { EntityCounter } from './EntityCounter';
@@ -182,7 +182,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ demoTrigger }) => {
           </div>
 
           {/* Primary Action Button: Download Sanitized File */}
-          <div className="flex items-center gap-2 self-start lg:self-end">
+          <div className="flex flex-wrap items-center gap-2 self-start lg:self-end">
             <button
               onClick={handleDownload}
               disabled={!processedDoc || !processedDoc.sanitizedText}
@@ -192,6 +192,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({ demoTrigger }) => {
               <Download className="w-4 h-4" />
               <span>Download sanitized {fileType.toUpperCase()} file</span>
             </button>
+            {fileType === 'csv' && processedDoc?.sanitizedText && (
+              <button type="button" className="secondary-action motion-control"
+                title="Prefixes formula-like cells with [TEXT]"
+                onClick={() => downloadSpreadsheetCsv(processedDoc.sanitizedText, fileName)}
+              >Download spreadsheet CSV</button>
+            )}
           </div>
         </div>
 
