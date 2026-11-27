@@ -8,6 +8,7 @@ import { usePreferences } from '../state/PreferencesContext';
 import { sanitizeDocument } from '../engine/masker';
 import { sanitizeCsvDocument, isCsvFormat } from '../engine/csv';
 import { downloadSpreadsheetCsv, downloadText } from '../engine/download';
+import { MAX_INPUT_CHARACTERS, MAX_UPLOAD_BYTES, UPLOAD_LIMIT_MESSAGE } from '../engine/inputLimits';
 import { SAMPLE_SUPPORT_TICKET, SAMPLE_CSV_TICKET } from '../engine/sampleTicket';
 import { ModeSelector } from './ModeSelector';
 import { EntityCounter } from './EntityCounter';
@@ -107,6 +108,11 @@ export const Workspace: React.FC<WorkspaceProps> = ({ demoTrigger }) => {
     const ext = file.name.split('.').pop()?.toLowerCase();
     if (ext !== 'txt' && ext !== 'csv') {
       setFileError('Unsupported file type. Please upload a .txt or .csv file.');
+      return;
+    }
+
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setFileError(UPLOAD_LIMIT_MESSAGE);
       return;
     }
 
@@ -292,7 +298,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({ demoTrigger }) => {
 
         {/* File Error Alert */}
         {fileError && (
-          <div className="mb-3 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex items-center gap-2 text-xs text-rose-700 dark:text-rose-300">
+          <div id="scanner-input-error" role="alert" className="mb-3 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex items-center gap-2 text-xs text-rose-700 dark:text-rose-300">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{fileError}</span>
           </div>
@@ -314,9 +320,20 @@ export const Workspace: React.FC<WorkspaceProps> = ({ demoTrigger }) => {
           </div>
           <textarea
             id="ticket-input"
+            aria-describedby={fileError ? 'scanner-input-error' : undefined}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
             value={inputText}
             onChange={(event) => {
               const text = event.target.value;
+              if (text.length > MAX_INPUT_CHARACTERS) {
+                setFileError('The pasted text is too long. Split it into smaller sections and try again.');
+                return;
+              }
+              ++fileReadId.current;
+              setFileError(null);
               setScanner((draft) => ({ ...draft, text }));
             }}
             onBlur={() => recordScanner(inputText, fileType, processedDoc?.counts)}
@@ -325,6 +342,10 @@ export const Workspace: React.FC<WorkspaceProps> = ({ demoTrigger }) => {
             className="w-full p-3 font-mono text-sm rounded-xl border border-border bg-canvas text-ink placeholder-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors"
           />
         </div>
+
+        <p role="status" className="sr-only">
+          {processedDoc ? `${counts.TOTAL} ${counts.TOTAL === 1 ? 'match' : 'matches'} detected.` : ''}
+        </p>
 
         {/* Category Filters Bar (Below Cards, Above Previews) */}
         <div className="mb-4 p-2.5 rounded-xl bg-canvas/80 border border-border">

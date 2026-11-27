@@ -5,6 +5,7 @@ import { ModeSelector } from '../components/ModeSelector';
 import { PageLayout, Reveal } from '../components/PageLayout';
 import { sanitizeCsvDocument } from '../engine/csv';
 import { downloadSpreadsheetCsv, downloadText } from '../engine/download';
+import { MAX_UPLOAD_BYTES, UPLOAD_LIMIT_MESSAGE } from '../engine/inputLimits';
 import { SAMPLE_CSV_TICKET } from '../engine/sampleTicket';
 import { usePreferences } from '../state/PreferencesContext';
 import { useSession } from '../state/SessionContext';
@@ -37,6 +38,10 @@ export function CsvPage() {
     const attempt = ++loadId.current;
     if (!file.name.toLowerCase().endsWith('.csv')) {
       setError('Choose a file with a .csv extension.');
+      return;
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setError(UPLOAD_LIMIT_MESSAGE);
       return;
     }
     try {
@@ -90,6 +95,9 @@ export function CsvPage() {
           </div>
         </div>
       </Reveal>
+      <p role="status" className="sr-only">
+        {result ? 'Sanitized CSV ready to download.' : ''}
+      </p>
       {table && (
         <Reveal delay={0.08}>
           <section className="accent-card detail-card csv-workspace" data-accent={mode.toLowerCase()} aria-label="CSV workspace">

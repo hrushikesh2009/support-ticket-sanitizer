@@ -185,6 +185,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
             onClick={handleCopy}
             disabled={!text}
             title="Copy to clipboard"
+            aria-label={isSanitized ? 'Copy sanitized output' : 'Copy original input'}
             className="motion-control inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg border border-border bg-surface text-ink hover:bg-canvas hover:-translate-y-0.5 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none transition-all shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             {copyStatus === 'copied' ? (
@@ -207,6 +208,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       <div
         ref={scrollContainerRef}
         tabIndex={0}
+        role="region"
         aria-label={`${title} content area`}
         className="flex-1 p-3 sm:p-4 overflow-y-auto max-h-[460px] font-mono text-xs text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >

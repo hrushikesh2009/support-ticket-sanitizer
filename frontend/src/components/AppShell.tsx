@@ -39,7 +39,7 @@ export function AppShell() {
         <Sidebar variant="desktop" collapsed={collapsed} onToggle={() => setCollapsed((value) => !value)} />
       </div>
       <header className="mobile-header">
-        <button type="button" className="shell-icon-button" aria-label="Open navigation" onClick={() => dialog.current?.showModal()}>
+        <button type="button" className="shell-icon-button" aria-label="Open navigation" aria-haspopup="dialog" aria-controls="mobile-navigation" onClick={() => dialog.current?.showModal()}>
           <Menu size={21} aria-hidden="true" />
         </button>
         <ShieldCheck size={19} className="text-primary" aria-hidden="true" />
