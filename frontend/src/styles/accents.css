@@ -1,0 +1,58 @@
+:root {
+  --entity-email: #086C52;
+  --entity-phone: #175BA5;
+  --entity-ipv4: #086B83;
+  --entity-ipv6: #4C43A6;
+  --entity-pan: #805315;
+  --entity-aadhaar: #944718;
+  --entity-card: #A22D4D;
+  --alias-accent: #246C48;
+}
+
+.dark {
+  --entity-email: #80DFBC;
+  --entity-phone: #9BC7FF;
+  --entity-ipv4: #8CDAF0;
+  --entity-ipv6: #BDB6FF;
+  --entity-pan: #F8C67F;
+  --entity-aadhaar: #FFBA90;
+  --entity-card: #FFA6BA;
+  --alias-accent: #A0DEAF;
+}
+
+[data-accent] { --accent: var(--primary); }
+[data-accent="email"] { --accent: var(--entity-email); }
+[data-accent="phone"], [data-accent="partial"] { --accent: var(--entity-phone); }
+[data-accent="ipv4"] { --accent: var(--entity-ipv4); }
+[data-accent="ipv6"] { --accent: var(--entity-ipv6); }
+[data-accent="pan"] { --accent: var(--entity-pan); }
+[data-accent="aadhaar"] { --accent: var(--entity-aadhaar); }
+[data-accent="card"] { --accent: var(--entity-card); }
+[data-accent="pseudonymize"] { --accent: var(--alias-accent); }
+
+.accent-card { position: relative; isolation: isolate; border: 1px solid var(--border); background-color: color-mix(in srgb, var(--accent, var(--primary)) 3%, var(--surface)); transition: background-color 300ms, border-color 350ms, box-shadow 350ms; }
+.accent-card::before { content: ''; position: absolute; z-index: -1; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 13%, transparent), transparent 70%); transition: opacity 350ms; }
+.accent-card:hover, .accent-card:focus-within { border-color: color-mix(in srgb, var(--accent) 52%, var(--border)); box-shadow: 0 12px 26px -18px var(--accent); }
+.accent-card:hover::before, .accent-card:focus-within::before { opacity: 1; }
+.accent-ink { color: var(--accent, var(--primary)); }
+.mode-workspace { --mode-accent: var(--accent); border-top: 3px solid var(--mode-accent); transition: border-color 350ms, background-color 300ms; }
+.mode-workspace .workspace-primary { background: var(--mode-accent); transition: background-color 350ms, transform 180ms; }
+.mode-workspace .workspace-primary:hover { background: color-mix(in srgb, var(--mode-accent) 85%, var(--ink)); }
+.tinted-control:hover, .tinted-control[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .motion-control:not(:disabled):hover { transform: translateY(-4px); }
+  .motion-control:not(:disabled):active { transform: scale(.97); }
+}
+.entity-highlight { animation: highlight-enter 420ms ease-out; }
+@keyframes highlight-enter { from { opacity: .55; } to { opacity: 1; } }
+
+:root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+:root[data-motion="off"] .motion-control { transform: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .motion-control { transform: none !important; }
+}

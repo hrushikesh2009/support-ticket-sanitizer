@@ -1,0 +1,90 @@
+:root {
+  --mesh-line: #52917A3D;
+  --mesh-cross: #628F9C33;
+  --mesh-aura: #8BCFB55A;
+  --mesh-cyan: #A7D4D659;
+  --mesh-blue: #ACCAC44A;
+  --lock-stroke: #185D55;
+}
+
+.dark {
+  --mesh-line: #72D6A45B;
+  --mesh-cross: #739ee449;
+  --mesh-aura: #26845974;
+  --mesh-cyan: #2C8BA76B;
+  --mesh-blue: #2B53756B;
+  --lock-stroke: #a4efdf;
+}
+
+.app-main { position: relative; z-index: 1; }
+.cyber-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 80% 0%, var(--mesh-aura), transparent 46%),
+    radial-gradient(ellipse at 100% 58%, var(--mesh-cyan), transparent 52%),
+    radial-gradient(ellipse at 30% 100%, var(--mesh-blue), transparent 64%);
+}
+.cyber-backdrop::before {
+  content: '';
+  position: absolute;
+  left: -28%;
+  right: -22%;
+  bottom: -52vh;
+  height: 134vh;
+  transform: perspective(660px) rotateX(48deg) rotateZ(-9deg);
+  transform-origin: 54% 62%;
+  background-image:
+    repeating-linear-gradient(90deg, var(--mesh-line) 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(0deg, var(--mesh-cross) 0 1px, transparent 1px 42px),
+    repeating-linear-gradient(132deg, var(--mesh-cross) 0 1px, transparent 1px 59px);
+  mask-image: radial-gradient(ellipse at 72% 49%, #000 7%, #000a 39%, transparent 76%);
+}
+.hero-lock {
+  position: absolute;
+  inset: 0 9% 0 auto;
+  display: grid;
+  place-items: center;
+  width: clamp(110px, 18vw, 226px);
+  color: var(--lock-stroke);
+  pointer-events: none;
+}
+.hero-lock::before,
+.hero-lock::after {
+  content: '';
+  position: absolute;
+  width: 94%;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--lock-stroke) 33%, transparent);
+  border-radius: 26%;
+  transform: rotate(45deg);
+}
+.hero-lock::after {
+  width: 73%;
+  transform: rotate(45deg);
+  background: radial-gradient(circle, color-mix(in srgb, var(--lock-stroke) 16%, transparent), transparent 75%);
+}
+.hero-lock-tile {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 60%;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--lock-stroke) 54%, transparent);
+  border-radius: 26%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--hero-mid) 88%, transparent), color-mix(in srgb, var(--hero-end) 87%, transparent));
+  box-shadow: 0 14px 38px -18px var(--lock-stroke);
+}
+.hero-lock-tile svg { width: 55%; height: 55%; }
+
+@media (max-width: 1130px) {
+  .hero-lock { inset: auto 7% 14% auto; width: clamp(100px, 16vw, 176px); opacity: .65; }
+}
+@media (max-width: 640px) {
+  .hero-lock { inset: auto 14% 8% auto; width: 92px; }
+  .cyber-backdrop::before { left: -55%; right: -30%; bottom: -48vh; }
+}
