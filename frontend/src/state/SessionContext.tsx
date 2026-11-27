@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
+import { createEntityCounts } from '../engine/entityCounts';
 import type { EntityCounts, SanitizationMode } from '../types';
 
-export const EMPTY_COUNTS: EntityCounts = { EMAIL: 0, PHONE: 0, IPV4: 0, IPV6: 0, PAN: 0, AADHAAR: 0, CARD: 0, TOTAL: 0 };
+export const EMPTY_COUNTS = createEntityCounts();
 
 export interface ScannerDraft {
   text: string;
