@@ -154,9 +154,10 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
         <div className="flex items-center gap-1.5">
           {isCsv && csvData && (
-            <div className="flex items-center bg-canvas rounded-lg p-0.5 text-[11px] border border-border">
+            <div role="group" aria-label="CSV preview format" className="flex items-center bg-canvas rounded-lg p-0.5 text-[11px] border border-border">
               <button
                 type="button"
+                aria-pressed={viewMode === 'text'}
                 onClick={() => setViewMode('text')}
                 className={`px-2 py-0.5 rounded font-medium transition-all ${
                   viewMode === 'text'
@@ -168,6 +169,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
               </button>
               <button
                 type="button"
+                aria-pressed={viewMode === 'table'}
                 onClick={() => setViewMode('table')}
                 className={`px-2 py-0.5 rounded font-medium transition-all ${
                   viewMode === 'table'

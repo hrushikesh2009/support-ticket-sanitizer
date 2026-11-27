@@ -16,7 +16,7 @@ export const EntityCounter: React.FC<EntityCounterProps> = ({
   const entityTypes: EntityType[] = ['EMAIL', 'PHONE', 'IPV4', 'IPV6', 'PAN', 'AADHAAR', 'CARD'];
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 py-1">
+    <div role="group" aria-label="Filter highlighted entity types" className="flex flex-wrap items-center gap-1.5 py-1">
       <div className="flex items-center gap-1 text-[11px] font-semibold text-muted mr-1">
         <Filter className="w-3 h-3 text-primary" />
         <span>Filter:</span>

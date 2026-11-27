@@ -38,7 +38,7 @@
 .mode-workspace { --mode-accent: var(--accent); border-top: 3px solid var(--mode-accent); transition: border-color 350ms, background-color 300ms; }
 .mode-workspace .workspace-primary { background: var(--mode-accent); transition: background-color 350ms, transform 180ms; }
 .mode-workspace .workspace-primary:hover { background: color-mix(in srgb, var(--mode-accent) 85%, var(--ink)); }
-.tinted-control:hover, .tinted-control[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.tinted-control:hover, .tinted-control[aria-pressed="true"], .tinted-control[aria-checked="true"] { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
 button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .motion-control:not(:disabled):hover { transform: translateY(-4px); }

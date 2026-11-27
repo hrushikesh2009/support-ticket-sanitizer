@@ -57,11 +57,9 @@ export function getPartialMask(raw: string, type: EntityType): string {
     case 'PHONE': {
       const digits = raw.replace(/\D/g, '');
       const last4 = digits.slice(-4);
-      if (raw.startsWith('+')) {
-        const prefix = raw.split(/[\s-]/)[0]; // e.g. +91 or +1
-        return `${prefix} ******${last4}`;
-      }
-      return `******${last4}`;
+      // Retain a country code only when the input separates it from the local number.
+      const countryCode = raw.match(/^\+\d{1,3}(?=[\s.(-])/)?.[0];
+      return `${countryCode ? `${countryCode} ` : ''}******${last4}`;
     }
 
     case 'IPV4': {
