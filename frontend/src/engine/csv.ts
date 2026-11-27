@@ -1,10 +1,10 @@
 import {
+  EntityCounts,
   EntityType,
   ProcessedDocument,
   SanitizationMode,
   SanitizedEntitySpan,
 } from '../types';
-import { createEntityCounts } from './entityCounts';
 import { sanitizeDocument } from './masker';
 
 /**
@@ -151,7 +151,16 @@ export function sanitizeCsvDocument(
       originalText: csvText,
       sanitizedText: '',
       entities: [],
-      counts: createEntityCounts(),
+      counts: {
+        EMAIL: 0,
+        PHONE: 0,
+        IPV4: 0,
+        IPV6: 0,
+        PAN: 0,
+        AADHAAR: 0,
+        CARD: 0,
+        TOTAL: 0,
+      },
       aliasMap: {},
       isCsv: true,
       csvData: {
@@ -167,7 +176,16 @@ export function sanitizeCsvDocument(
   const sharedAliasMap = new Map<string, string>();
   const typeCounters = new Map<string, number>();
 
-  const overallCounts = createEntityCounts();
+  const overallCounts: EntityCounts = {
+    EMAIL: 0,
+    PHONE: 0,
+    IPV4: 0,
+    IPV6: 0,
+    PAN: 0,
+    AADHAAR: 0,
+    CARD: 0,
+    TOTAL: 0,
+  };
 
   const cellsWithEntities: { row: number; column: number; entities: SanitizedEntitySpan[] }[] = [];
   const columnCounts: Partial<Record<EntityType, number>>[] = [];
@@ -181,13 +199,18 @@ export function sanitizeCsvDocument(
       const cellVal = rawRow[c];
       const cellResult = sanitizeDocument(cellVal, mode, sharedAliasMap, typeCounters);
 
+      // Accumulate counts
+      overallCounts.EMAIL += cellResult.counts.EMAIL;
+      overallCounts.PHONE += cellResult.counts.PHONE;
+      overallCounts.IPV4 += cellResult.counts.IPV4;
+      overallCounts.IPV6 += cellResult.counts.IPV6;
+      overallCounts.PAN += cellResult.counts.PAN;
+      overallCounts.AADHAAR += cellResult.counts.AADHAAR;
+      overallCounts.CARD += cellResult.counts.CARD;
       overallCounts.TOTAL += cellResult.counts.TOTAL;
 
       const column = columnCounts[c] ??= {};
-      for (const { type } of cellResult.entities) {
-        overallCounts[type] += 1;
-        column[type] = (column[type] ?? 0) + 1;
-      }
+      for (const { type } of cellResult.entities) column[type] = (column[type] ?? 0) + 1;
       if (cellResult.entities.length) cellsWithEntities.push({ row: r, column: c, entities: cellResult.entities });
 
       sanitizedRow.push(cellResult.sanitizedText);

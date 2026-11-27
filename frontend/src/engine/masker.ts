@@ -1,11 +1,11 @@
 import {
+  EntityCounts,
   EntityType,
   ProcessedDocument,
   SanitizationMode,
   SanitizedEntitySpan,
 } from '../types';
 import { detectAllCandidates, resolveOverlaps } from './detector';
-import { createEntityCounts } from './entityCounts';
 
 /**
  * Produces a type-specific partial mask retaining safe, non-sensitive context fragments
@@ -143,7 +143,17 @@ export function sanitizeDocument(
   const rawCandidates = detectAllCandidates(text);
   const resolvedCandidates = resolveOverlaps(rawCandidates);
 
-  const counts = createEntityCounts();
+  // Initialize counts
+  const counts: EntityCounts = {
+    EMAIL: 0,
+    PHONE: 0,
+    IPV4: 0,
+    IPV6: 0,
+    PAN: 0,
+    AADHAAR: 0,
+    CARD: 0,
+    TOTAL: 0,
+  };
 
   const entities: SanitizedEntitySpan[] = [];
   let sanitizedText = '';
